@@ -34,7 +34,7 @@ abstract class IntegrationStep<Example extends IntegrationExample?> {
   }) async =>
       await tester.runAsync<Object?>(
         () async {
-          debugPrint(_description);
+          debugPrintSynchronously(_description);
           return await _step(
             tester,
             log,
@@ -51,7 +51,7 @@ class Given<Example extends IntegrationExample?>
     extends IntegrationStep<Example> {
   Given(String description, IntegrationStepCallback<Example> step)
       : super(
-          description: '[INTEGRATION-TEST] 👉 Given: $description',
+          description: '${IntegrationLog.tag} 👉 Given: $description',
           step: step,
         );
 }
@@ -61,7 +61,7 @@ class And<Example extends IntegrationExample?>
     extends IntegrationStep<Example> {
   And(String description, IntegrationStepCallback<Example> step)
       : super(
-          description: '[INTEGRATION-TEST] 👉 And: $description',
+          description: '${IntegrationLog.tag} 👉 And: $description',
           step: step,
         );
 }
@@ -71,7 +71,7 @@ class When<Example extends IntegrationExample?>
     extends IntegrationStep<Example> {
   When(String description, IntegrationStepCallback<Example> step)
       : super(
-          description: '[INTEGRATION-TEST] 👉 When: $description',
+          description: '${IntegrationLog.tag} 👉 When: $description',
           step: step,
         );
 }
@@ -81,7 +81,7 @@ class Then<Example extends IntegrationExample?>
     extends IntegrationStep<Example> {
   Then(String description, IntegrationStepCallback<Example> step)
       : super(
-          description: '[INTEGRATION-TEST] 👉 Then: $description',
+          description: '${IntegrationLog.tag} 👉 Then: $description',
           step: step,
         );
 }
@@ -91,7 +91,38 @@ class But<Example extends IntegrationExample?>
     extends IntegrationStep<Example> {
   But(String description, IntegrationStepCallback<Example> step)
       : super(
-          description: '[INTEGRATION-TEST] 👉 But: $description',
+          description: '${IntegrationLog.tag} 👉 But: $description',
+          step: step,
+        );
+}
+
+/// Implementation of an [IntegrationStep] that logs a 'Gherkin' -> 'Give', 'When' and 'Then' step.
+class GivenWhenThen<Example extends IntegrationExample?>
+    extends IntegrationStep<Example> {
+  GivenWhenThen(String description, IntegrationStepCallback<Example> step)
+      : super(
+          description:
+              '${IntegrationLog.tag} 👉 Give, When and Then: $description',
+          step: step,
+        );
+}
+
+/// Implementation of an [IntegrationStep] that logs a 'Gherkin' -> 'When' and 'Then' step.
+class WhenThen<Example extends IntegrationExample?>
+    extends IntegrationStep<Example> {
+  WhenThen(String description, IntegrationStepCallback<Example> step)
+      : super(
+          description: '${IntegrationLog.tag} 👉 When and Then: $description',
+          step: step,
+        );
+}
+
+/// Implementation of an [IntegrationStep] that discards the 'Gherkin' notation and tells us directly what the code should do.
+class Should<Example extends IntegrationExample?>
+    extends IntegrationStep<Example> {
+  Should(String description, IntegrationStepCallback<Example> step)
+      : super(
+          description: '${IntegrationLog.tag} 👉 Should: $description',
           step: step,
         );
 }

@@ -61,8 +61,12 @@ class IntegrationTest {
       _description,
       () {
         _setUpAndTeardown();
-        for (final feature in _features) {
-          feature.test(binding: _binding);
+        for (int nrFeature = 0; nrFeature < _features.length; nrFeature++) {
+          _features[nrFeature].test(
+            binding: _binding,
+            testDescription: _description,
+            nrFeature: nrFeature,
+          );
         }
       },
     );

@@ -59,7 +59,13 @@ class IntegrationScenario<Example extends IntegrationExample?> {
   /// All tests run at least once (or more depending on the amount of examples) and inside their
   /// own [testWidgets] method. Override this method and call your [_steps] test() methods in a
   /// different manner if this unwanted behaviour.
-  void test({IntegrationTestWidgetsFlutterBinding? binding}) {
+  void test({
+    IntegrationTestWidgetsFlutterBinding? binding,
+    String? testDescription,
+    String? featureDescription,
+    int? nrScenario,
+    int? nrFeature,
+  }) {
     flutter_test.group(
       _description,
       () {
@@ -70,12 +76,25 @@ class IntegrationScenario<Example extends IntegrationExample?> {
                 ? 'Example ${index + 1}: ${_examples[index]}'
                 : _description,
             (tester) async {
+              debugPrintSynchronously('---');
               try {
+                if (testDescription != null) {
+                  debugPrintSynchronously(
+                      '${IntegrationLog.tag} 📝 Test: $testDescription');
+                }
+                if (featureDescription != null) {
+                  debugPrintSynchronously(
+                      '${IntegrationLog.tag} 🦾 Feature${nrFeature != null ? ' ${nrFeature + 1}' : ''}: $featureDescription');
+                }
+                debugPrintSynchronously(
+                    '${IntegrationLog.tag} 🎩 Scenario${nrScenario != null ? ' ${nrScenario + 1}' : ''}: $_description');
                 if (_examples.isNotEmpty) {
                   final example = _examples[index];
-                  debugPrint('🏷 Example ${index + 1}: $example');
+                  debugPrintSynchronously(
+                      '${IntegrationLog.tag} 🏷 Example ${index + 1}: $example');
                 }
-                debugPrint('🎬 Test started!');
+                debugPrintSynchronously(
+                    '${IntegrationLog.tag} 🎬 Test started!');
                 Object? result;
                 for (final step in _steps) {
                   if (_examples.isNotEmpty) {
@@ -87,22 +106,25 @@ class IntegrationScenario<Example extends IntegrationExample?> {
                       result: result,
                     );
                     if (result != null) {
-                      debugPrint('📜 Result:\n$result');
+                      debugPrintSynchronously(
+                          '${IntegrationLog.tag} 📜 Passing result to next step: $result');
                     }
                   } else {
                     await step.test(
                       tester: tester,
                       binding: binding,
                       result: result,
-                      log: _log ??= IntegrationLog(tester: tester),
+                      log: _log ??= const IntegrationLog(),
                     );
                     if (result != null) {
-                      debugPrint('📜 Result:\n$result');
+                      debugPrintSynchronously(
+                          '${IntegrationLog.tag} 📜 Passing result to next step: $result');
                     }
                   }
                 }
               } catch (error) {
-                debugPrint('❌ Test failed!\n---');
+                debugPrintSynchronously(
+                    '${IntegrationLog.tag} ❌ Test failed!\n---');
                 rethrow;
               }
             },

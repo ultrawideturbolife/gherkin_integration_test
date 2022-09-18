@@ -42,13 +42,23 @@ class IntegrationFeature {
   final IntegrationTestWidgetsFlutterBinding? _binding;
 
   /// Runs this [IntegrationFeature]'s [IntegrationScenario.test] methods.
-  void test({IntegrationTestWidgetsFlutterBinding? binding}) {
+  void test({
+    IntegrationTestWidgetsFlutterBinding? binding,
+    String? testDescription,
+    int? nrFeature,
+  }) {
     flutter_test.group(
       _description,
       () {
         _setUpAndTeardown();
-        for (final scenario in _scenarios) {
-          scenario.test(binding: _binding ?? binding);
+        for (int nrScenario = 0; nrScenario < _scenarios.length; nrScenario++) {
+          _scenarios[nrScenario].test(
+            binding: _binding ?? binding,
+            featureDescription: _description,
+            testDescription: testDescription,
+            nrScenario: nrScenario,
+            nrFeature: nrFeature,
+          );
         }
       },
     );

@@ -1,8 +1,15 @@
-This package is based on the `Behaviour Driven Development` (BDD) language called `Gherkin`. This language enables us as developers to design and execute tests in an intuitive and readable way. For people who have a little less experience with development, these tests are also easy to understand because the syntax is very similar to English.
+<aside>
+💡 The example project has a test folder where the example project is being fully tested with this framework. Check that out if you’re not that into reading good documentation 😏.
 
-Most `Gherkin` tests look something like this:
+</aside>
 
-```dart
+This package is based on the Behaviour Driven Development (BDD) language called Gherkin. This language enables us as developers to design and execute tests in an intuitive and readable way. For people who have a little less experience with development, these tests are also easy to understand because the syntax is very similar to English.
+
+![https://media.giphy.com/media/d31vEN2v9DzBqEx2/giphy.gif](https://media.giphy.com/media/d31vEN2v9DzBqEx2/giphy.gif)
+
+Most Gherkin tests look something like this:
+
+```gherkin
 Feature: This feature shows an example
 
     Scenario: It shows a good example
@@ -11,18 +18,18 @@ Feature: This feature shows an example
       Then the example should explode
 ```
 
-In this same we have built our framework, we have the following classes at our disposal:
+In this same mannier we have built our framework, we have the following classes at our disposal:
 
 - `IntegrationTest`
 - `IntegrationFeature`
 - `IntegrationScenario`
 - `IntegrationExample`
 - `IntegrationStep` (abstract)
-    - `Given`
-    - `When`
-    - `Then`
-    - `And`
-    - `But`
+  - `Given`
+  - `When`
+  - `Then`
+  - `And`
+  - `But`
 
 From top to bottom, each class can contain a number of the class below it (one to many). A test may contain multiple features which in turn may contain multiple scenarios. Scenarios can then (optionally) run different examples in which they perform a series of steps.
 
@@ -147,15 +154,15 @@ typedef IntegrationStepCallback<T extends IntegrationExample?> = FutureOr<dynami
 ```
 
 - `WidgetTester tester`
-    - Class that programmatically interacts with widgets and the test environment (directly from Flutter’s `integration_test` package).
+  - Class that programmatically interacts with widgets and the test environment (directly from Flutter’s `integration_test` package).
 - `Log log`
-    - Class that allows for subtle logging of steps information in your tests.
+  - Class that allows for subtle logging of steps information in your tests.
 - `IntegrationExample? example`
-    - Optional ‘Scenario Outline’ examples that we’ll get to later, in short these are different inputs for the same scenario so you can run / cover different variations of one scenario.
+  - Optional ‘Scenario Outline’ examples that we’ll get to later, in short these are different inputs for the same scenario so you can run / cover different variations of one scenario.
 - `IntegrationTestWidgetsFlutterBinding? binding`
-    - Optional binding element that’s retrieved after starting an integration test and that you may pass through at different levels (most commonly when initialising the IntegrationTest and passing it as an argument). This may be used to take screenshots for example.
+  - Optional binding element that’s retrieved after starting an integration test and that you may pass through at different levels (most commonly when initialising the IntegrationTest and passing it as an argument). This may be used to take screenshots for example.
 - `Object? result`
-    - Each step is able to optionally return a value, may this be the case then this value is available to you in the next step as a `result`.
+  - Each step is able to optionally return a value, may this be the case then this value is available to you in the next step as a `result`.
 
 Setting up the success scenario may look like this:
 
@@ -209,6 +216,17 @@ While this may perfectly fit our testing needs there are a couple functionalitie
 
 - `IntegrationExample`
 - `setUp` and `tearDown` methods
+
+### **🏆 Bonus GherkinSteps**
+
+---
+
+- `GivenWhenThen`
+  - For when you can’t be bothered to create and use the separate step functionality regarding the ‘Given’, ‘When’ and ‘Then’ steps. This allows you to write the entire test in one step.
+- `WhenThen`
+  - For when you can’t be bothered to create and use the separate step functionality regarding the ‘When’ and ‘Then’ steps. This allows you to combine both steps into one.
+- `Should`
+  - For when you feel like using steps is not your style. This step defines the entire test in one ‘Should’ sentence.
 
 ### 🧪 Examples
 
