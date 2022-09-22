@@ -8,7 +8,7 @@ class IntegrationLog {
   final WidgetTester tester;
 
   void info(String message) =>
-      tester.printToConsole('[INTEGRATION-TEST] 💡 $message');
+      tester.printToConsole('[INTEGRATION-TEST] 🗣 $message');
   void value(Object? value, String message) =>
       tester.printToConsole('[INTEGRATION-TEST] 💾 $message: $value');
   void warning(String message) =>
