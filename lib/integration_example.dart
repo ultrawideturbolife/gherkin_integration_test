@@ -3,7 +3,7 @@ part of '../integration_test.dart';
 /// Used to define 'Scenario Outline' examples.
 class IntegrationExample {
   const IntegrationExample({
-    required List<Object?>? values,
+    List<Object?>? values,
     String? description,
     this.isLastExample = false,
   })  : _values = values,
