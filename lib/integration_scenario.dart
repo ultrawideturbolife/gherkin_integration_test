@@ -110,7 +110,7 @@ class IntegrationScenario<Example extends IntegrationExample?> {
                           '${IntegrationLog.tag} 📜 Passing result to next step: $result');
                     }
                   } else {
-                    await step.test(
+                    result = await step.test(
                       tester: tester,
                       binding: binding,
                       result: result,

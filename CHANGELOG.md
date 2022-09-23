@@ -1,3 +1,7 @@
+## 0.0.2+2
+
+* **🐛️ Bugfix:** Fix passing around result bug
+
 ## 0.0.2+1
 
 * Fix readme
