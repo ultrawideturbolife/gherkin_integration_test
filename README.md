@@ -1,5 +1,7 @@
+# Gherkin Integration Test
+
 <aside>
-💡 The example project has a test folder where the example project is being fully tested with this framework. Check that out if you’re not that into reading good documentation 😏.
+💡 The example project has a test folder where the example project is being fully tested with this framework.
 
 </aside>
 
@@ -18,7 +20,7 @@ Feature: This feature shows an example
       Then the example should explode
 ```
 
-In this same mannier we have built our framework, we have the following classes at our disposal:
+In this same manner we have built our framework, we have the following classes at our disposal:
 
 - `IntegrationTest`
 - `IntegrationFeature`
@@ -322,6 +324,30 @@ Given(
 
 </aside>
 
+### 🧸 Custom Examples
+
+---
+
+It’s also possible to create your own `UnitExample` like this:
+
+```dart
+class CustomExample extends IntegrationExample {
+  CustomExample({
+    required this.platform,
+    required this.connection,
+  });
+
+  final Platform platform;
+  final Connection connection;
+}
+```
+
+Your `IntegrationStep` will automatically recognise the type of your example if you specify it as a generic argument for your `IntegrationScenario` like this:
+
+```dart
+class ExampleScenario extends IntegrationScenario<CustomExample> {}
+```
+
 ### 🏗 setUpOnce, setUpEach, tearDownOnce, tearDownEach
 
 ---
@@ -368,21 +394,3 @@ class DummyIntegrationTest extends IntegrationTest {
 ```
 
 Now to run these tests all you have to do is add the `DummyIntegrationTests` to your main test function and hit run. In this example we would like to use the `IntegrationTestWidgetsFlutterBinding` in our tests so let’s add that to the constructor as well.
-
-```dart
-// Adding it to the constructor
-DummyIntegrationTest({required IntegrationTestWidgetsFlutterBinding binding})
-      : super(
-          description: 'All tests regarding dummies',
-          binding: binding,
-```
-
-```dart
-void main() {
-// Getting the binding by calling this function
-  final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized()
-      as IntegrationTestWidgetsFlutterBinding;
-// Running the test
-  DummyIntegrationTests(binding: binding).test();
-}
-```
