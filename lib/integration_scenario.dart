@@ -1,11 +1,11 @@
 part of '../integration_test.dart';
 
 /// Used to hold and test a list of [IntegrationStep].
-class IntegrationScenario {
+class IntegrationScenario<Example extends IntegrationExample?> {
   IntegrationScenario({
     required String description,
     required List<IntegrationStep> steps,
-    List<IntegrationExample> examples = const [],
+    List<Example> examples = const [],
     IntegrationTestWidgetsFlutterBinding? binding,
     TestGroupFunction? setUpEach,
     TestGroupFunction? tearDownEach,
@@ -33,7 +33,7 @@ class IntegrationScenario {
   final List<IntegrationStep> _steps;
 
   /// List of scenario outline examples of type [Example] that extend [IntegrationExample].
-  final List<IntegrationExample> _examples;
+  final List<Example> _examples;
 
   /// The glue between the widgets layer and the Flutter engine.
   final IntegrationTestWidgetsFlutterBinding? _binding;
@@ -82,9 +82,7 @@ class IntegrationScenario {
                     result = await step.test(
                       tester: tester,
                       log: _log ??= IntegrationLog(tester: tester),
-                      example: index != (_examples.length - 1)
-                          ? _examples[index]
-                          : _examples[index].copyWith(isLastExample: true),
+                      example: _examples[index],
                       binding: _binding ?? binding,
                       result: result,
                     );

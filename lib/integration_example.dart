@@ -18,16 +18,6 @@ class IntegrationExample {
   /// Indicates whether this is the last example of a scenario.
   final bool isLastExample;
 
-  IntegrationExample copyWith({
-    required bool isLastExample,
-  }) {
-    return IntegrationExample(
-      values: _values,
-      description: _description,
-      isLastExample: isLastExample,
-    );
-  }
-
   @override
   String toString() => _description ?? 'IntegrationExample{values: $_values}';
 }
