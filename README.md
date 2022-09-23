@@ -328,7 +328,7 @@ Given(
 
 ---
 
-It’s also possible to create your own `UnitExample` like this:
+It’s also possible to create your own `IntegrationExample` like this:
 
 ```dart
 class CustomExample extends IntegrationExample {

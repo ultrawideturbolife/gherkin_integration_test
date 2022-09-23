@@ -1,3 +1,7 @@
+## 0.0.2+1
+
+* Fix readme
+
 ## 0.0.2
 
 * **⚠️ Breaking:** Added generic argument to scenario for easier example usage.
