@@ -6,7 +6,7 @@ class IntegrationLog {
   static const String tag = '[INTEGRATION-TEST]';
 
   void info(String message) =>
-      tester.printToConsole('[INTEGRATION-TEST] 🗣 $message');
+      debugPrintSynchronously('[INTEGRATION-TEST] 🗣 $message');
   void value(Object? value, String message) =>
       debugPrintSynchronously('$tag 💾 $message: $value');
   void warning([String message = 'Warning!']) =>

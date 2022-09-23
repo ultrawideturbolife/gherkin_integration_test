@@ -100,7 +100,7 @@ class IntegrationScenario<Example extends IntegrationExample?> {
                   if (_examples.isNotEmpty) {
                     result = await step.test(
                       tester: tester,
-                      log: _log ??= IntegrationLog(tester: tester),
+                      log: _log ??= const IntegrationLog(),
                       example: _examples[index],
                       binding: _binding ?? binding,
                       result: result,
