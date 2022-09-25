@@ -20,7 +20,7 @@ class DecrementValueNotifierCounterScenario extends IntegrationScenario {
           steps: [
             Given(
               'The GherkinIntegrationTestView is active',
-              (tester, log, [example, binding, result]) async {
+              (tester, log, box, [example, binding]) async {
                 log.info('Initialising the view..');
                 await tester.pumpWidget(const MyApp());
                 await tester.pumpAndSettle();
@@ -29,7 +29,7 @@ class DecrementValueNotifierCounterScenario extends IntegrationScenario {
             ),
             And(
               'The counter is at $_originalCounterValue',
-              (tester, log, [example, binding, result]) async {
+              (tester, log, box, [example, binding]) async {
                 log.info('Setting the counter to $_originalCounterValue..');
                 final resetButton = find.byKey(ConstKeys.resetButton);
                 expect(resetButton, findsOneWidget);
@@ -59,7 +59,7 @@ class DecrementValueNotifierCounterScenario extends IntegrationScenario {
             ),
             When(
               'I decrement the counter',
-              (tester, log, [example, binding, result]) async {
+              (tester, log, box, [example, binding]) async {
                 final nrOfDecrements = example.firstValue();
                 log.info('Decrementing the counter $nrOfDecrements times..');
                 final button =
@@ -78,7 +78,7 @@ class DecrementValueNotifierCounterScenario extends IntegrationScenario {
               'We expect the ValueNotifier to have a '
               'decremented value of ($_originalCounterValue minus decrements) '
               'and (at least 0)',
-              (tester, log, [example, binding, result]) {
+              (tester, log, box, [example, binding]) async {
                 log.info('Checking value of counter..');
                 final counterValue = (find
                         .byKey(ConstKeys.valueOfTheValueNotifierCounter)

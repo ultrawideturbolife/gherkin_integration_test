@@ -1,3 +1,8 @@
+## 0.0.3
+
+* **⚠️ Breaking:** Replaces the `result` parameter (now `box`) of the `IntegrationStepCallback` with an instance of `IntegrationBox`. This will allow you to save multiple persistent values throughout a series of steps inside the `box` instead of passing around a maximum of one single value as a `result` through multiple steps.
+* **⚠️ Breaking:** Removed the recently introduces extension methods for cast a result since `result` has now been replaces with the new `IntegrationBox` which has this functionality built in.
+
 ## 0.0.2+3
 
 * Added `asType` and `asNullableType` extension methods for easier usage of an `IntegrationStep`'s result.
@@ -17,7 +22,7 @@
 
 ## 0.0.1+3
 
-* Remove `required` from the `UnitExample.values` field.
+* Remove `required` from the `IntegrationExample.values` field.
 
 ## 0.0.1+2
 

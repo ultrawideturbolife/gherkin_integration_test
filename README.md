@@ -1,13 +1,9 @@
-# Gherkin Integration Test
-
 <aside>
 💡 The example project has a test folder where the example project is being fully tested with this framework.
 
 </aside>
 
 This package is based on the Behaviour Driven Development (BDD) language called Gherkin. This language enables us as developers to design and execute tests in an intuitive and readable way. For people who have a little less experience with development, these tests are also easy to understand because the syntax is very similar to English.
-
-![https://media.giphy.com/media/d31vEN2v9DzBqEx2/giphy.gif](https://media.giphy.com/media/d31vEN2v9DzBqEx2/giphy.gif)
 
 Most Gherkin tests look something like this:
 
@@ -36,7 +32,7 @@ In this same manner we have built our framework, we have the following classes a
 From top to bottom, each class can contain a number of the class below it (one to many). A test may contain multiple features which in turn may contain multiple scenarios. Scenarios can then (optionally) run different examples in which they perform a series of steps.
 
 <aside>
-💡 *In this guide we will instantiate most classes on the fly and describe them with a `description` parameter. This feels more natural and intuitive when creating tests. However, you may also choose to inherit the classes and override values as you see fit. This may allow for more structure and will give you a little more flexibility as to adding your own classes / values inside the implementations, because working from the constructor will not allow any access to values inside the class. That being said most of the time you won’t need to add your own classes because this framework provides you with enough flexibility through `setUp` / `tearDown` methods and the passing of results through steps (more on that later).*
+💡 *In this guide we will instantiate most classes on the fly and describe them with a `description` parameter. This feels more natural and intuitive when creating tests. However, you may also choose to inherit the classes and override values as you see fit. This may allow for more structure and will give you a little more flexibility as to adding your own classes / values inside the implementations, because working from the constructor will not allow any access to values inside the class. That being said most of the time you won’t need to add your own classes because this framework provides you with enough flexibility through `setUp` / `tearDown` methods and the saving of values throughout different steps (more on that later).*
 
 </aside>
 
@@ -146,12 +142,12 @@ Each step requires a description and a callback. The callback for the `Integrati
 
 ```dart
 /// Callback used to provide the necessary tools to execute an [IntegrationStep].
-typedef IntegrationStepCallback<T extends IntegrationExample?> = FutureOr<dynamic> Function(
+typedef IntegrationStepCallback<T extends IntegrationExample?> = FutureOr<void> Function(
   WidgetTester tester,
-  Log log, [
+  IntegrationLog log,
+  IntegrationBox box, [
   T? example,
   IntegrationTestWidgetsFlutterBinding? binding,
-  Object? result,
 ]);
 ```
 
@@ -161,10 +157,10 @@ typedef IntegrationStepCallback<T extends IntegrationExample?> = FutureOr<dynami
   - Class that allows for subtle logging of steps information in your tests.
 - `IntegrationExample? example`
   - Optional ‘Scenario Outline’ examples that we’ll get to later, in short these are different inputs for the same scenario so you can run / cover different variations of one scenario.
+- `IntegrationBox box`
+  - A box that may be used to write and read values that need to persist throughout a series of steps inside a `IntegrationScenario`.
 - `IntegrationTestWidgetsFlutterBinding? binding`
   - Optional binding element that’s retrieved after starting an integration test and that you may pass through at different levels (most commonly when initialising the IntegrationTest and passing it as an argument). This may be used to take screenshots for example.
-- `Object? result`
-  - Each step is able to optionally return a value, may this be the case then this value is available to you in the next step as a `result`.
 
 Setting up the success scenario may look like this:
 
@@ -183,19 +179,19 @@ class DummyIntegrationTest extends IntegrationTest {
                   steps: [
                     Given(
                       'We are at the dummy screen',
-                      (tester, log, [example, binding, result]) {
+                      (tester, log, box, [example, binding]) {
                         // TODO(you): Go to dummy screen
                       },
                     ),
                     When(
                       'We save a dummy',
-                      (tester, log, [example, binding, result]) {
+                      (tester, log, box, [example, binding]) {
                         // TODO(you): Save dummy
                       },
                     ),
                     Then(
                       'It should succeed',
-                      (tester, log, [example, binding, result]) {
+                      (tester, log, box, [example, binding]) {
                         // TODO(you): Verify success
                       },
                     ),
@@ -229,6 +225,43 @@ While this may perfectly fit our testing needs there are a couple functionalitie
   - For when you can’t be bothered to create and use the separate step functionality regarding the ‘When’ and ‘Then’ steps. This allows you to combine both steps into one.
 - `Should`
   - For when you feel like using steps is not your style. This step defines the entire test in one ‘Should’ sentence.
+
+### 📦 IntegrationBox
+
+---
+
+The `IntegrationBox` comes as the third argument (`box`) in the `IntegrationStepCallback`. This box is basically a map that may be used to write and read values that need to persist throughout a series of steps inside an `IntegrationScenario`. Any value that you `box.write(key, value)` will be retrievable in all `IntegratrionStep`'s after that or until removed or until all steps have been executed. Reading a value with box.`read(key)` will automatically cast it to the `Type` that you specify. So reading an `int` like this → `final int value = box.read(myIntValue)` would automatically cast it to an `int` (🆒).
+
+Using the box may look like this:
+
+```dart
+[
+  Given(
+    'This is an example for the IntegrationBox',
+        (tester, log, box, [example, binding]) {
+      box.write('isExample', true);
+    },
+  ),
+  When(
+    'we write some values',
+        (tester, log, box, [example, binding]) {
+      box.write('exampleValue', 1);
+      box.write('mood', 'happy');
+    },
+  ),
+  Then(
+    'all the values should be accessible up until the last step.',
+        (tester, log, box, [example, binding]) {
+      final bool isExample = box.read('isExample');
+      final int exampleValue = box.read('exampleValue');
+      final bool mood = box.read('mood');
+      expect(isExample, true);
+      expect(exampleValue, 1);
+      expect(mood, 'happy');
+    },
+  ),
+]
+```
 
 ### 🧪 Examples
 
@@ -269,19 +302,19 @@ class DummyIntegrationTest extends IntegrationTest {
                   steps: [
                     Given(
                       'We are at the dummy screen',
-                      (tester, log, [example, binding, result]) {
+                      (tester, log, box, [example, binding]) {
                         // TODO(you): Go to dummy screen
                       },
                     ),
                     When(
                       'We save a dummy',
-                      (tester, log, [example, binding, result]) {
+                      (tester, log, box, [example, binding]) {
                         // TODO(you): Save dummy
                       },
                     ),
                     Then(
                       'It should succeed',
-                      (tester, log, [example, binding, result]) {
+                      (tester, log, box, [example, binding]) {
                         // TODO(you): Verify success
                       },
                     ),
@@ -394,3 +427,21 @@ class DummyIntegrationTest extends IntegrationTest {
 ```
 
 Now to run these tests all you have to do is add the `DummyIntegrationTests` to your main test function and hit run. In this example we would like to use the `IntegrationTestWidgetsFlutterBinding` in our tests so let’s add that to the constructor as well.
+
+```dart
+// Adding it to the constructor
+DummyIntegrationTest({required IntegrationTestWidgetsFlutterBinding binding})
+      : super(
+          description: 'All tests regarding dummies',
+          binding: binding,
+```
+
+```dart
+void main() {
+// Getting the binding by calling this function
+  final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized()
+      as IntegrationTestWidgetsFlutterBinding;
+// Running the test
+  DummyIntegrationTests(binding: binding).test();
+}
+```

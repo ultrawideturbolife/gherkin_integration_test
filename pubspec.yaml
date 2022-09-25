@@ -1,6 +1,6 @@
 name: gherkin_integration_test
 description: A gherkin integration test framework based on flutter's official integration_test package.
-version: 0.0.2+3
+version: 0.0.3
 homepage: https://github.com/codaveto/gherkin_integration_test
 
 environment:

@@ -1,13 +1,13 @@
 part of 'integration_test.dart';
 
 /// Callback used to provide the necessary tools to execute an [IntegrationStep].
-typedef IntegrationStepCallback<T extends IntegrationExample?>
-    = FutureOr<dynamic> Function(
+typedef IntegrationStepCallback<T extends IntegrationExample?> = FutureOr<void>
+    Function(
   WidgetTester tester,
-  IntegrationLog log, [
+  IntegrationLog log,
+  IntegrationBox box, [
   T? example,
   IntegrationTestWidgetsFlutterBinding? binding,
-  Object? result,
 ]);
 
 /// Used to represents a step inside a [IntegrationScenario].
@@ -25,12 +25,12 @@ abstract class IntegrationStep<Example extends IntegrationExample?> {
   final IntegrationStepCallback<Example?> _step;
 
   /// Runs all code defined in a specific [IntegrationStep].
-  FutureOr<Object?> test({
+  FutureOr<void> test({
     required WidgetTester tester,
     required IntegrationLog log,
+    required IntegrationBox box,
     Example? example,
     IntegrationTestWidgetsFlutterBinding? binding,
-    Object? result,
   }) async =>
       await tester.runAsync<Object?>(
         () async {
@@ -38,9 +38,9 @@ abstract class IntegrationStep<Example extends IntegrationExample?> {
           return await _step(
             tester,
             log,
+            box,
             example,
             binding,
-            result,
           );
         },
       );
@@ -125,12 +125,4 @@ class Should<Example extends IntegrationExample?>
           description: '${IntegrationLog.tag} 👉 Should: $description',
           step: step,
         );
-}
-
-/// Helpful but dangerous casting method to allow for easier usage of a [IntegrationStep] result.
-///
-/// This will cast the result to any type, use with caution!
-extension StepResultExtension on Object? {
-  E asType<E>() => this as E;
-  E? asNullableType<E>() => this as E?;
 }

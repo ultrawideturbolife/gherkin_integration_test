@@ -7,7 +7,7 @@ import 'gherkin_integration_test_view_model.dart';
 
 class GherkinIntegrationTestView extends StatelessWidget {
   const GherkinIntegrationTestView({Key? key}) : super(key: key);
-  static const String route = 'gherkin-unit-test-view';
+  static const String route = 'gherkin-integration-test-view';
 
   @override
   Widget build(BuildContext context) {

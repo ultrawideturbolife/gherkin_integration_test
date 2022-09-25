@@ -16,7 +16,7 @@ class ResetModelCounterScenario extends IntegrationScenario {
           steps: [
             Given(
               'The GherkinIntegrationTestView is active',
-              (tester, log, [example, binding, result]) async {
+              (tester, log, box, [example, binding]) async {
                 log.info('Starting app..');
                 await tester.pumpWidget(const MyApp());
                 await tester.pumpAndSettle();
@@ -25,7 +25,7 @@ class ResetModelCounterScenario extends IntegrationScenario {
             ),
             Given(
               'The modelCounter has been incremented',
-              (tester, log, [example, binding, result]) async {
+              (tester, log, box, [example, binding]) async {
                 final int initialValue = example.firstValue();
                 log.info('Incrementing modelCounter with $initialValue..');
                 final incrementButton =
@@ -40,7 +40,7 @@ class ResetModelCounterScenario extends IntegrationScenario {
             ),
             WhenThen(
               'I call the reset method then the modelCounter should be 0',
-              (tester, log, [example, binding, result]) async {
+              (tester, log, box, [example, binding]) async {
                 log.info('Tapping reset button..');
                 final resetButton = find.byKey(ConstKeys.resetButton);
                 await tester.tap(resetButton);

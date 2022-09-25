@@ -13,6 +13,7 @@ part 'integration_example.dart';
 part 'integration_feature.dart';
 part 'integration_scenario.dart';
 part 'integration_step.dart';
+part 'integration_box.dart';
 
 /// Used to hold and test a list of [IntegrationFeature].
 class IntegrationTest {

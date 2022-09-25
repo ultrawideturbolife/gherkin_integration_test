@@ -4,7 +4,6 @@ import 'package:example/main.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gherkin_integration_test/integration_test.dart';
-import 'package:integration_test/integration_test.dart';
 
 class ResetValueNotifierCounterScenario extends IntegrationScenario {
   ResetValueNotifierCounterScenario()
@@ -17,8 +16,7 @@ class ResetValueNotifierCounterScenario extends IntegrationScenario {
           steps: [
             Given(
               'The GherkinIntegrationTestView is active',
-              (tester, log, [example, binding, result]) async {
-                log.info('Starting app..');
+              (tester, log, box, [example, binding]) async {
                 await tester.pumpWidget(const MyApp());
                 await tester.pumpAndSettle();
                 log.success('App started!');
@@ -26,7 +24,7 @@ class ResetValueNotifierCounterScenario extends IntegrationScenario {
             ),
             Given(
               'The ValueNotifier has been incremented',
-              (tester, log, [example, binding, result]) async {
+              (tester, log, box, [example, binding]) async {
                 final int initialValue = example.firstValue();
                 log.info('Incrementing ValueNotifier with $initialValue..');
                 final incrementButton =
@@ -41,7 +39,7 @@ class ResetValueNotifierCounterScenario extends IntegrationScenario {
             ),
             WhenThen(
               'I call the reset method then the ValueNotifier should be 0',
-              (tester, log, [example, binding, result]) async {
+              (tester, log, box, [example, binding]) async {
                 log.info('Tapping reset button..');
                 final resetButton = find.byKey(ConstKeys.resetButton);
                 await tester.tap(resetButton);

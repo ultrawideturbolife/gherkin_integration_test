@@ -21,7 +21,7 @@ class IntegrationScenario<Example extends IntegrationExample?> {
         _tearDownOnce = tearDownOnce;
 
   /// Used to facilitate extra logging capabilities inside [IntegrationStep].
-  IntegrationLog? _log;
+  final IntegrationLog _log = const IntegrationLog();
 
   /// High-level description of the [IntegrationScenario].
   final String _description;
@@ -95,32 +95,30 @@ class IntegrationScenario<Example extends IntegrationExample?> {
                 }
                 debugPrintSynchronously(
                     '${IntegrationLog.tag} 🎬 Test started!');
-                Object? result;
-                for (final step in _steps) {
-                  if (_examples.isNotEmpty) {
-                    result = await step.test(
-                      tester: tester,
-                      log: _log ??= const IntegrationLog(),
-                      example: _examples[index],
-                      binding: _binding ?? binding,
-                      result: result,
-                    );
-                    if (result != null) {
-                      debugPrintSynchronously(
-                          '${IntegrationLog.tag} 📜 Passing result to next step: $result');
-                    }
-                  } else {
-                    result = await step.test(
-                      tester: tester,
-                      binding: binding,
-                      result: result,
-                      log: _log ??= const IntegrationLog(),
-                    );
-                    if (result != null) {
-                      debugPrintSynchronously(
-                          '${IntegrationLog.tag} 📜 Passing result to next step: $result');
+                final box = IntegrationBox();
+                try {
+                  for (final step in _steps) {
+                    if (_examples.isNotEmpty) {
+                      await step.test(
+                        tester: tester,
+                        log: _log,
+                        example: _examples[index],
+                        binding: _binding ?? binding,
+                        box: box,
+                      );
+                    } else {
+                      await step.test(
+                        tester: tester,
+                        binding: binding,
+                        box: box,
+                        log: _log,
+                      );
                     }
                   }
+                } catch (error) {
+                  rethrow;
+                } finally {
+                  box._clear();
                 }
               } catch (error) {
                 debugPrintSynchronously(
