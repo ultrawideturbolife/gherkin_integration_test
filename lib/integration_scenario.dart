@@ -65,11 +65,13 @@ class IntegrationScenario<Example extends IntegrationExample?> {
     String? featureDescription,
     int? nrScenario,
     int? nrFeature,
+    IntegrationMocks? mocks,
   }) {
     flutter_test.group(
       _description,
       () {
-        _setUpAndTeardown();
+        final _mocks = mocks ?? IntegrationMocks();
+        _setUpAndTeardown(mocks: _mocks);
         for (int index = 0; index < math.max(1, _examples.length); index++) {
           flutter_test.testWidgets(
             _examples.isNotEmpty
@@ -96,29 +98,25 @@ class IntegrationScenario<Example extends IntegrationExample?> {
                 debugPrintSynchronously(
                     '${IntegrationLog.tag} 🎬 Test started!');
                 final box = IntegrationBox();
-                try {
-                  for (final step in _steps) {
-                    if (_examples.isNotEmpty) {
-                      await step.test(
-                        tester: tester,
-                        log: _log,
-                        example: _examples[index],
-                        binding: _binding ?? binding,
-                        box: box,
-                      );
-                    } else {
-                      await step.test(
-                        tester: tester,
-                        binding: binding,
-                        box: box,
-                        log: _log,
-                      );
-                    }
+                for (final step in _steps) {
+                  if (_examples.isNotEmpty) {
+                    await step.test(
+                      tester: tester,
+                      log: _log,
+                      example: _examples[index],
+                      binding: _binding ?? binding,
+                      box: box,
+                      mocks: _mocks,
+                    );
+                  } else {
+                    await step.test(
+                      tester: tester,
+                      binding: binding,
+                      box: box,
+                      log: _log,
+                      mocks: _mocks,
+                    );
                   }
-                } catch (error) {
-                  rethrow;
-                } finally {
-                  box._clear();
                 }
               } catch (error) {
                 debugPrintSynchronously(
@@ -133,10 +131,20 @@ class IntegrationScenario<Example extends IntegrationExample?> {
   }
 
   /// Runs any provided [_setUpEach], [_setUpOnce], [_tearDownEach] and [_tearDownOnce] methods.
-  void _setUpAndTeardown() {
-    if (_setUpOnce != null) flutter_test.setUpAll(_setUpOnce!);
-    if (_tearDownOnce != null) flutter_test.tearDownAll(_tearDownOnce!);
-    if (_setUpEach != null) flutter_test.setUp(_setUpEach!);
-    if (_tearDownEach != null) flutter_test.tearDown(_tearDownEach!);
+  void _setUpAndTeardown({
+    required IntegrationMocks mocks,
+  }) {
+    if (_setUpOnce != null) {
+      flutter_test.setUpAll(() => _setUpOnce!(mocks));
+    }
+    if (_tearDownOnce != null) {
+      flutter_test.tearDownAll(() => _tearDownOnce!(mocks));
+    }
+    if (_setUpEach != null) {
+      flutter_test.setUp(() => _setUpEach!(mocks));
+    }
+    if (_tearDownEach != null) {
+      flutter_test.tearDown(() => _tearDownEach!(mocks));
+    }
   }
 }

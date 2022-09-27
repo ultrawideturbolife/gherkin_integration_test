@@ -1,3 +1,8 @@
+## 0.0.4
+
+* **⚠️ Breaking:** Added the `IntegrationMocks` object that gets passed around from your setup methods until your last `IntegrationStep` to facilitate better mocks integration.
+* **⚠️ Breaking:** All set up methods (`setUpEach`, `setUpOnce`, `tearDownEach` and `tearDownOnce`) inside all parent classes (`IntegrationTest`, `IntegrationFeature` and `IntegrationScenario`) will now have access to the new `IntegrationMocks` object.
+
 ## 0.0.3
 
 * **⚠️ Breaking:** Replaces the `result` parameter (now `box`) of the `IntegrationStepCallback` with an instance of `IntegrationBox`. This will allow you to save multiple persistent values throughout a series of steps inside the `box` instead of passing around a maximum of one single value as a `result` through multiple steps.

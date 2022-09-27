@@ -21,7 +21,7 @@ class DecrementModelCounterScenario extends IntegrationScenario {
           steps: [
             Given(
               'The GherkinIntegrationTestView is active',
-              (tester, log, box, [example, binding]) async {
+              (tester, log, box, mocks, [example, binding]) async {
                 log.info('Initialising the view..');
                 await tester.pumpWidget(const MyApp());
                 await tester.pumpAndSettle();
@@ -30,7 +30,7 @@ class DecrementModelCounterScenario extends IntegrationScenario {
             ),
             And(
               'The counter is at $_originalCounterValue',
-              (tester, log, box, [example, binding]) async {
+              (tester, log, box, mocks, [example, binding]) async {
                 log.info('Setting the counter to $_originalCounterValue..');
                 final resetButton = find.byKey(ConstKeys.resetButton);
                 expect(resetButton, findsOneWidget);
@@ -59,7 +59,7 @@ class DecrementModelCounterScenario extends IntegrationScenario {
             ),
             When(
               'I decrement the counter',
-              (tester, log, box, [example, binding]) async {
+              (tester, log, box, mocks, [example, binding]) async {
                 final nrOfDecrements = example.firstValue();
                 log.info('Decrementing the counter $nrOfDecrements times..');
                 final button =
@@ -78,7 +78,7 @@ class DecrementModelCounterScenario extends IntegrationScenario {
               'We expect the modelCounter to have a '
               'decremented value of ($_originalCounterValue minus decrements) '
               'and (at least 0)',
-              (tester, log, box, [example, binding]) async {
+              (tester, log, box, mocks, [example, binding]) async {
                 log.info('Checking value of counter..');
                 final counterValue = (find
                         .byKey(ConstKeys.valueOfTheModelCounter)

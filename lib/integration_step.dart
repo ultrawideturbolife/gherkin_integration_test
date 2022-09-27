@@ -1,12 +1,13 @@
 part of 'integration_test.dart';
 
 /// Callback used to provide the necessary tools to execute an [IntegrationStep].
-typedef IntegrationStepCallback<T extends IntegrationExample?> = FutureOr<void>
-    Function(
+typedef IntegrationStepCallback<Example extends IntegrationExample?>
+    = FutureOr<void> Function(
   WidgetTester tester,
   IntegrationLog log,
-  IntegrationBox box, [
-  T? example,
+  IntegrationBox box,
+  IntegrationMocks mocks, [
+  Example? example,
   IntegrationTestWidgetsFlutterBinding? binding,
 ]);
 
@@ -29,6 +30,7 @@ abstract class IntegrationStep<Example extends IntegrationExample?> {
     required WidgetTester tester,
     required IntegrationLog log,
     required IntegrationBox box,
+    required IntegrationMocks mocks,
     Example? example,
     IntegrationTestWidgetsFlutterBinding? binding,
   }) async =>
@@ -39,6 +41,7 @@ abstract class IntegrationStep<Example extends IntegrationExample?> {
             tester,
             log,
             box,
+            mocks,
             example,
             binding,
           );

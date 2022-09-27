@@ -1,11 +1,17 @@
+# 🦾 **Gherkin Integration Test**
+
+---
+
 <aside>
-💡 The example project has a test folder where the example project is being fully tested with this framework.
+❗  The example project has a test folder where the example project is being fully tested with this framework.
 
 </aside>
 
-This package is based on the Behaviour Driven Development (BDD) language called Gherkin. This language enables us as developers to design and execute tests in an intuitive and readable way. For people who have a little less experience with development, these tests are also easy to understand because the syntax is very similar to English.
+This package is based on the `Behaviour Driven Development` (BDD) language called `Gherkin`. This language enables us as developers to design and execute tests in an intuitive and readable way. For people who have a little less experience with development, these tests are also easy to understand because the syntax is very similar to English.
 
-Most Gherkin tests look something like this:
+![DALL·E 2022-09-27 21.08.11 - a gherkin monster super hero with wings and a computer flying through space, fantasy style.png](https://codaveto.com/_next/image?url=https%3A%2F%2Fsuper-static-assets.s3.amazonaws.com%2F653aa7f7-32fd-4a5c-b3cf-2044da52b531%2Fimages%2Fefc35787-99e6-4591-8eb5-84787c2880aa.png&w=1920&q=80)
+
+Most tests look something like this:
 
 ```gherkin
 Feature: This feature shows an example
@@ -16,55 +22,28 @@ Feature: This feature shows an example
       Then the example should explode
 ```
 
-In this same manner we have built our framework, we have the following classes at our disposal:
+In this same way we have built our framework, we have the following classes at our disposal:
 
 - `IntegrationTest`
 - `IntegrationFeature`
 - `IntegrationScenario`
 - `IntegrationExample`
-- `IntegrationStep` (abstract)
+- `IntegrationStep` (abstract)
   - `Given`
   - `When`
   - `Then`
   - `And`
   - `But`
 
-From top to bottom, each class can contain a number of the class below it (one to many). A test may contain multiple features which in turn may contain multiple scenarios. Scenarios can then (optionally) run different examples in which they perform a series of steps.
+From top to bottom, each class may contain a number of the class below it (one to many). A `IntegrationTest` may contain multiple `IntegrationFeature` which in turn may contain multiple `IntegrationScenario` which in turn may contain multiple `IntegrationExample` and `IntegrationStep`.
 
-<aside>
-💡 *In this guide we will instantiate most classes on the fly and describe them with a `description` parameter. This feels more natural and intuitive when creating tests. However, you may also choose to inherit the classes and override values as you see fit. This may allow for more structure and will give you a little more flexibility as to adding your own classes / values inside the implementations, because working from the constructor will not allow any access to values inside the class. That being said most of the time you won’t need to add your own classes because this framework provides you with enough flexibility through `setUp` / `tearDown` methods and the saving of values throughout different steps (more on that later).*
-
-</aside>
-
-## 🥼 Basic testing knowledge
+## **🛠 Implementation**
 
 ---
 
-- Before continuing this guide make sure you have basic testing knowledge regarding writing unit tests in Flutter. The following resource is a great place to start:
-
-  [An introduction to integration testing](https://docs.flutter.dev/cookbook/testing/integration/introduction)
-
-- Be sure to have a look at the `expect library` of the `flutter_test` package. You don’t have to know every method that’s available but it’s good to have seen most methods at least once so you know what’s possible. This library should be used to assert outcomes of your tests.
-
-  [expect library - Dart API](https://api.flutter.dev/flutter/package-test_api_expect/package-test_api_expect-library.html)
-
-- Then specifically for integration tests continue to explore the methods that are available to you through the `WidgetTester.` Most useful ones (tapping, entering text, waiting for animations to finish) you will learn by practice but it’s good to have seen this reference at least once before writing your first test to get a feel for what’s possible.
-
-  [WidgetTester class - flutter_test library - Dart API](https://api.flutter.dev/flutter/flutter_test/WidgetTester-class.html)
-
-- Last but not least, we use the `mockito` package to mock services when needed, check out their page and specifically how to stub and how the `@GenerateMocks([])` annotation works.
-
-  [mockito | Dart Package](https://pub.dev/packages/mockito)
-
-
-## 🛠 Implementation
-
----
-
-Start by creating a test class that inherits the `IntegrationTest` class. Then create a constructor that takes no arguments but does call the superclass with a `description` and (for now) an empty list of `features`.
+Start by creating a test class that inherits the `IntegrationTest` class. Then create a constructor that takes no arguments but does call the superclass with a `description` and (for now) an empty list of `features`.
 
 ```dart
-@GenerateMocks([])
 class DummyIntegrationTest extends IntegrationTest {
   DummyIntegrationTest()
       : super(
@@ -74,19 +53,13 @@ class DummyIntegrationTest extends IntegrationTest {
 }
 ```
 
-<aside>
-💡 *We will not get into specifics on how to use mocks and / or how to create them, just know that we use the `@GenerateMocks([])` annotation to easily create and stub mocks of desired classes. For more info on the annotation and mocks in general check out the link mentioned in **🥼 Basic testing knowledge** above.*
-
-</aside>
-
-### 📲 Features
+### **📲 Features**
 
 ---
 
-In the `features` list we can now define our first `IntegrationFeature`. We give it a name and (for now) an empty list of `scenarios`.
+In the `features` list we can now define our first `IntegrationFeature`. We give it a name and (for now) an empty list of `scenarios`.
 
 ```dart
-@GenerateMocks([])
 class DummyIntegrationTest extends IntegrationTest {
   DummyIntegrationTest()
       : super(
@@ -101,16 +74,17 @@ class DummyIntegrationTest extends IntegrationTest {
 }
 ```
 
-### 🤝 Scenarios
+### **🤝 Scenarios**
 
 ---
 
-Now it's time to think about what kind of `scenarios` might occur in your test. Often this is already well thought out in advance when preparing a ticket. For this example we will use ’a successful save’ and ‘an unsuccessful save’ as possible `scenarios`. We use the `IntegrationScenario` class to create both `scenarios` and place them in the empty list. We again pass in a `description` and this time an empty list of `steps`.
+Now it's time to think about what kind of `scenarios` might occur in your test. For this example we will use ’a successful save’ and ‘an unsuccessful save’ as possible `scenarios`.
+
+We use the `IntegrationScenario` class to create both `scenarios` and place them in the empty list. We also pass in a `description` and this time an empty list of `steps`.
 
 ```dart
-@GenerateMocks([])
 class DummyIntegrationTest extends IntegrationTest {
-  DummyIntegrationTests()
+  DummyIntegrationTest()
       : super(
           description: 'All integration tests regarding dummies',
           features: [
@@ -132,40 +106,102 @@ class DummyIntegrationTest extends IntegrationTest {
 }
 ```
 
-### 🐾 Steps
+### **🐾 Steps**
 
 ---
 
-Now comes the good part. For each scenario, we may define `steps`. We have access to `Given`, `When`, `Then`, `And` and `But`. All of these steps do basically the same thing in the background, but by using them correctly, you learn to plan, work out and execute your tests in an intuitive and proper `BDD` way.
+Now comes the good part. For each scenario, we may define `steps`. We have access to `Given`, `When`, `Then`, `And` and `But`. All of these steps do basically the same thing in the background, but by using them correctly, you learn to plan, work out and execute your tests in an intuitive and proper BDD way.
 
-Each step requires a description and a callback. The callback for the `IntegrationTests` looks as follows and grants access to the following parameters:
+Each step requires a description and a callback. The callback for the `IntegrationTests` looks as follows and grants access to the following parameters:
 
 ```dart
 /// Callback used to provide the necessary tools to execute an [IntegrationStep].
-typedef IntegrationStepCallback<T extends IntegrationExample?> = FutureOr<void> Function(
+typedef IntegrationStepCallback<Example extends IntegrationExample?> = FutureOr<void> Function(
   WidgetTester tester,
   IntegrationLog log,
-  IntegrationBox box, [
-  T? example,
+  IntegrationBox box,
+  IntegrationMocks mocks, [
+  Example? example,
   IntegrationTestWidgetsFlutterBinding? binding,
 ]);
 ```
 
 - `WidgetTester tester`
-  - Class that programmatically interacts with widgets and the test environment (directly from Flutter’s `integration_test` package).
+  - Class that programmatically interacts with widgets and the test environment (directly from Flutter’s `integration_test` **package).
 - `Log log`
   - Class that allows for subtle logging of steps information in your tests.
-- `IntegrationExample? example`
-  - Optional ‘Scenario Outline’ examples that we’ll get to later, in short these are different inputs for the same scenario so you can run / cover different variations of one scenario.
 - `IntegrationBox box`
-  - A box that may be used to write and read values that need to persist throughout a series of steps inside a `IntegrationScenario`.
-- `IntegrationTestWidgetsFlutterBinding? binding`
-  - Optional binding element that’s retrieved after starting an integration test and that you may pass through at different levels (most commonly when initialising the IntegrationTest and passing it as an argument). This may be used to take screenshots for example.
+  - This box is basically a map that may be used to write and read values that need to persist throughout a series of steps inside a `IntegrationScenario`. Any value that you `box.write(key, value)` will be retrievable in all `IntegrationStep`'s after that or until removed or until all steps have been executed. Reading a value with box.`read(key)` will automatically cast it to the `Type` that you specify. So reading an `int` like this → `final int value = box.read(myIntValue)` would automatically cast it to an `int` (🆒).
 
-Setting up the success scenario may look like this:
+    Using the box may look like this:
+
+      ```dart
+      [
+        Given(
+          'This is an example for the IntegrationBox',
+          (tester, log, box, mocks, [example, binding]) {
+            box.write('isExample', true);
+          },
+        ),
+        When(
+          'we write some values',
+          (tester, log, box, mocks, [example, binding]) {
+            box.write('exampleValue', 1);
+            box.write('mood', 'happy');
+          },
+        ),
+        Then(
+          'all the values should be accessible up until the last step.',
+          (tester, log, box, mocks, [example, binding]) {
+            final bool isExample = box.read('isExample');
+            final int exampleValue = box.read('exampleValue');
+            final bool mood = box.read('mood');
+            expect(isExample, true);
+            expect(exampleValue, 1);
+            expect(mood, 'happy');
+          },
+        ),
+      ]
+      ```
+
+- `IntegrationMocks mocks`
+  - A box that exists and persists throughout your entire `IntegrationTest`, `IntegrationFeature` and/or `IntegrationScenario`. You may have optionally use this box to store mocks that you need so you may later retrieve them to stub methods to your liking.
+- `IntegrationExample? example`
+  - Optional ‘Scenario Outline’ examples that may have been specified inside a `IntegrationScenario` like this:
+
+      ```dart
+      IntegrationScenario(
+        description: 'Saving a good dummy should succeed',
+        examples: [
+          const IntegrationExample(values: [1]),
+          const IntegrationExample(values: [5]),
+          const IntegrationExample(values: [10]),
+        ],
+      )
+      ```
+
+    This `IntegrationScenario` will now run 3 times, once for each `IntegrationExample`. You may access the `example` in the following way:
+
+      ```dart
+      Given(
+          'I access the example value',
+          (tester, log, box, mocks, [example, binding]) {
+            final int exampleValue = example!.firstValue();
+          },
+        )
+      ```
+
+      <aside>
+      💡 Be sure to make your declaration type safe so the `firstValue()` helper method can `cast` the value to whatever type your specify, use with caution!
+
+      </aside>
+
+
+### **🐾 Steps Implementation**
+
+Combining all that information will allow us to finalise and set up the success scenario like this:
 
 ```dart
-@GenerateMocks([])
 class DummyIntegrationTest extends IntegrationTest {
   DummyIntegrationTest()
       : super(
@@ -173,25 +209,30 @@ class DummyIntegrationTest extends IntegrationTest {
           features: [
             IntegrationFeature(
               description: 'Saving of dummies',
+              setUpOnce: (mocks) {
+                final dummyMock = DummyMock();
+                mocks.write(dummyMock);
+              },
               scenarios: [
                 IntegrationScenario(
                   description: 'Saving a good dummy should succeed',
                   steps: [
                     Given(
-                      'We are at the dummy screen',
-                      (tester, log, box, [example, binding]) {
-                        // TODO(you): Go to dummy screen
+                      'The dummy service is initialised',
+                      (tester, log, box, mocks, [example, binding]) {
+                        mocks.read(DummyMock).stubWhatever();
+                        // TODO(you): Initialise service
                       },
                     ),
                     When(
-                      'We save a dummy',
-                      (tester, log, box, [example, binding]) {
-                        // TODO(you): Save dummy
+                      'We call the dummy service with dummy info',
+                      (tester, log, box, mocks, [example, binding]) {
+                        // TODO(you): Call dummy service with dummy info
                       },
                     ),
                     Then(
                       'It should succeed',
-                      (tester, log, box, [example, binding]) {
+                      (tester, log, box, mocks, [example, binding]) {
                         // TODO(you): Verify success
                       },
                     ),
@@ -199,231 +240,107 @@ class DummyIntegrationTest extends IntegrationTest {
                 ),
                 IntegrationScenario(
                   description: 'Saving a bad dummy should fail',
-                  steps: [
-                    // TODO(you): Implement fail steps
-                  ],
+                  steps: [],
                 ),
               ],
             ),
           ],
         );
 }
-```
-
-While this may perfectly fit our testing needs there are a couple functionalities at our disposal that give our tests extra power:
-
-- `IntegrationExample`
-- `setUp` and `tearDown` methods
-
-### **🏆 Bonus GherkinSteps**
-
----
-
-- `GivenWhenThen`
-  - For when you can’t be bothered to create and use the separate step functionality regarding the ‘Given’, ‘When’ and ‘Then’ steps. This allows you to write the entire test in one step.
-- `WhenThen`
-  - For when you can’t be bothered to create and use the separate step functionality regarding the ‘When’ and ‘Then’ steps. This allows you to combine both steps into one.
-- `Should`
-  - For when you feel like using steps is not your style. This step defines the entire test in one ‘Should’ sentence.
-
-### 📦 IntegrationBox
-
----
-
-The `IntegrationBox` comes as the third argument (`box`) in the `IntegrationStepCallback`. This box is basically a map that may be used to write and read values that need to persist throughout a series of steps inside an `IntegrationScenario`. Any value that you `box.write(key, value)` will be retrievable in all `IntegratrionStep`'s after that or until removed or until all steps have been executed. Reading a value with box.`read(key)` will automatically cast it to the `Type` that you specify. So reading an `int` like this → `final int value = box.read(myIntValue)` would automatically cast it to an `int` (🆒).
-
-Using the box may look like this:
-
-```dart
-[
-  Given(
-    'This is an example for the IntegrationBox',
-        (tester, log, box, [example, binding]) {
-      box.write('isExample', true);
-    },
-  ),
-  When(
-    'we write some values',
-        (tester, log, box, [example, binding]) {
-      box.write('exampleValue', 1);
-      box.write('mood', 'happy');
-    },
-  ),
-  Then(
-    'all the values should be accessible up until the last step.',
-        (tester, log, box, [example, binding]) {
-      final bool isExample = box.read('isExample');
-      final int exampleValue = box.read('exampleValue');
-      final bool mood = box.read('mood');
-      expect(isExample, true);
-      expect(exampleValue, 1);
-      expect(mood, 'happy');
-    },
-  ),
-]
-```
-
-### 🧪 Examples
-
----
-
-Let’s continue with our test demonstrated above. For the succeeding scenario of ‘saving a good dummy should succeed’ we’re going to add some `examples`. Each example will get run through the specified `steps` in your scenario and each example will be accessible through the `example` parameter. Let’s start with adding an `example` where we specify the platform and the current connection status.
-
-```dart
-@GenerateMocks([])
-class DummyIntegrationTest extends IntegrationTest {
-  DummyIntegrationTest()
-      : super(
-          description: 'All integration tests regarding dummies',
-          features: [
-            IntegrationFeature(
-              description: 'Saving of dummies',
-              scenarios: [
-                IntegrationScenario(
-                  description: 'Saving a good dummy should succeed',
-                  examples: [
-                    IntegrationExample(
-                      description: 'Platform is iOS, Connection status is online',
-                      values: [Platform.iOS, Connection.online],
-                    ),
-                    IntegrationExample(
-                      description: 'Platform is Android, Connection status is online',
-                      values: [Platform.android, Connection.online],
-                    ),
-                    IntegrationExample(
-                      description: 'Platform is iOS, Connection status is offline',
-                      values: [Platform.iOS, Connection.offline],
-                    ),
-                    IntegrationExample(
-                      description: 'Platform is Android, Connection status is offline',
-                      values: [Platform.android, Connection.offline],
-                    ),
-                  ],
-                  steps: [
-                    Given(
-                      'We are at the dummy screen',
-                      (tester, log, box, [example, binding]) {
-                        // TODO(you): Go to dummy screen
-                      },
-                    ),
-                    When(
-                      'We save a dummy',
-                      (tester, log, box, [example, binding]) {
-                        // TODO(you): Save dummy
-                      },
-                    ),
-                    Then(
-                      'It should succeed',
-                      (tester, log, box, [example, binding]) {
-                        // TODO(you): Verify success
-                      },
-                    ),
-                  ],
-                ),
-                IntegrationScenario(
-                  description: 'Saving a bad dummy should fail',
-                  steps: [
-                    // TODO(you): Implement fail steps
-                  ],
-                ),
-              ],
-            ),
-          ],
-        );
-}
-```
-
-So for each example:
-
-- 'Platform is iOS, Connection status is online'
-- 'Platform is Android, Connection status is online'
-- 'Platform is iOS, Connection status is offline'
-- 'Platform is Android, Connection status is offline'
-
-It will now run each step (`Given`, `When`, `Then`) inside the 'Saving a good dummy should succeed' scenario. You may now access the example values in the following way:
-
-```dart
-Given(
-  'We are at the dummy screen',
-  (tester, log, [example, binding, result]) {
-    final Platform platform = example.firstValue();
-    final Connection connection = example.secondValue();
-  },
-),
 ```
 
 <aside>
-💡 *Be sure to make your declaration type safe, because the `firstValue()` helper method will `cast` the value to whatever type your specify, use with caution!*
+💡 We have also added the usage of `mocks` in this example to demonstrate the `IntegrationMocks` feature. The `IntegrationFeature` now has a `setupOnce` method (more on this type of method later) that creates the mock and puts into the `mocks` object. We then later retrieve this mock in the `Given` step to `stub` it for a hypothetical reaction.
 
 </aside>
 
-### 🧸 Custom Examples
+### **🏆 Bonus IntegrationSteps**
 
 ---
 
-It’s also possible to create your own `IntegrationExample` like this:
+Because not everybody wants to write tests the same way we also created these combined step classes to allow for creating the same kind of integration tests, but with less steps.
 
-```dart
-class CustomExample extends IntegrationExample {
-  CustomExample({
-    required this.platform,
-    required this.connection,
-  });
+- `GivenWhenThen`
+  - For when you can’t be bothered to create and use the separate step functionality regarding the ‘`Given`’, ‘`When`’ and ‘`Then`’ steps. This allows you to write the entire test in one step.
+- `WhenThen`
+  - For when you can’t be bothered to create and use the separate step functionality regarding the ‘`When`’ and ‘`Then`’ steps. This allows you to combine both steps into one.
+- `Should`
+  - For when you feel like using steps is not your style. This step defines the entire test in one ‘`Should`’ sentence.
 
-  final Platform platform;
-  final Connection connection;
-}
-```
+# **⚡️ Almost there!**
 
-Your `IntegrationStep` will automatically recognise the type of your example if you specify it as a generic argument for your `IntegrationScenario` like this:
+While this may perfectly fit our testing needs there are a couple functionalities at our disposal that give our tests extra power.
 
-```dart
-class ExampleScenario extends IntegrationScenario<CustomExample> {}
-```
-
-### 🏗 setUpOnce, setUpEach, tearDownOnce, tearDownEach
+### **🏗 setUpOnce, setUpEach, tearDownOnce, tearDownEach**
 
 ---
 
-Another handy way to empower your tests is by using one of several `setUp` and `tearDown` methods. Each class has access to these methods and will run them in sort of the same way:
+Each class has access to these methods and will run them in sort of the same way:
 
-- `setUpEach` - will run at the START of EACH `IntegrationScenario` under the chosen class (may be specified in `IntegrationTest`, `IntegrationFeature` or `IntegrationScenario` itself).
-- `tearDownEach` - will run at the END of EACH `IntegrationScenario` under the chosen class (may be specified in `IntegrationTest`, `IntegrationFeature` or `IntegrationScenario` itself).
-- `setUpOnce` - will run ONCE at the START of chosen class (may be specified in `IntegrationTest`, `IntegrationFeature` or `IntegrationScenario` itself).
-- `tearDownOnce` - will run ONCE at the END of chosen class (may be specified in `IntegrationTest`, `IntegrationFeature` or `IntegrationScenario` itself).
+- `setUpEach` - will run at the START of EACH `IntegrationScenario` under the chosen class (may be specified in `IntegrationTest`, `IntegrationFeature` or `IntegrationScenario` itself).
+- `tearDownEach` - will run at the END of EACH `IntegrationScenario` under the chosen class (may be specified in `IntegrationTest`, `IntegrationFeature` or `IntegrationScenario` itself).
+- `setUpOnce` - will run ONCE at the START of chosen class (may be specified in `IntegrationTest`, `IntegrationFeature` or `IntegrationScenario` itself).
+- `tearDownOnce` - will run ONCE at the END of chosen class (may be specified in `IntegrationTest`, `IntegrationFeature` or `IntegrationScenario` itself).
 
 <aside>
-💡 *So a good way to remember which method does what is that all the `each` methods will run per `IntegrationScenario` / `IntegrationExample` **under the defining class that holds the method** and all the `once` methods will run **once in the defining class that holds the method**.*
+💡 So a good way to remember which method does what is that all the `each` methods will run per `IntegrationScenario` / `IntegrationExample` (**this** is important to realise!) **under the defining class that holds the method** and all the `once` methods will run **once in the defining class that holds the method**.
 
 </aside>
 
 Using the methods may look a bit like this:
 
 ```dart
-@GenerateMocks([])
 class DummyIntegrationTest extends IntegrationTest {
   DummyIntegrationTest()
       : super(
           description: 'All integration tests regarding dummies',
-          setUpOnce: () async {
-            await AppSetup.initialise(); // Runs once at the start of this test.
-          },
-          tearDownOnce: () async {
-            await AppSetup.dispose(); // Runs once at the end of this test.
-          },
           features: [
             IntegrationFeature(
               description: 'Saving of dummies',
-              tearDownEach: () {
-                // TODO(you): Reset to dummy screen at the end of each scenario or example in this feature.
+              setUpOnce: (mocks) {
+                final dummyMock = DummyMock();
+                mocks.write(dummyMock);
+              },
+              setUpEach: (mocks) async {
+                AppSetup.reset();
+              },
+              tearDownOnce: (mocks) async {
+                // Do something
               },
               scenarios: [
                 IntegrationScenario(
                   description: 'Saving a good dummy should succeed',
-                  setUpEach: () {
-                    // TODO(you): Reset dummy status at the start of this scenario or each example in this scenario.
-                  },
-                  examples: // etc, rest of code
+                  steps: [
+                    Given(
+                      'The dummy service is initialised',
+                      (tester, log, box, mocks, [example, binding]) {
+                        mocks.read(DummyMock).stubWhatever();
+                        // TODO(you): Initialise service
+                      },
+                    ),
+                    When(
+                      'We call the dummy service with dummy info',
+                      (tester, log, box, mocks, [example, binding]) {
+                        // TODO(you): Call dummy service with dummy info
+                      },
+                    ),
+                    Then(
+                      'It should succeed',
+                      (tester, log, box, mocks, [example, binding]) {
+                        // TODO(you): Verify success
+                      },
+                    ),
+                  ],
+                ),
+                IntegrationScenario(
+                  description: 'Saving a bad dummy should fail',
+                  steps: [],
+                ),
+              ],
+            ),
+          ],
+        );
+}
 ```
 
 Now to run these tests all you have to do is add the `DummyIntegrationTests` to your main test function and hit run. In this example we would like to use the `IntegrationTestWidgetsFlutterBinding` in our tests so let’s add that to the constructor as well.
@@ -434,6 +351,7 @@ DummyIntegrationTest({required IntegrationTestWidgetsFlutterBinding binding})
       : super(
           description: 'All tests regarding dummies',
           binding: binding,
+
 ```
 
 ```dart
@@ -444,4 +362,5 @@ void main() {
 // Running the test
   DummyIntegrationTests(binding: binding).test();
 }
+
 ```

@@ -17,7 +17,7 @@ class IncrementValueNotifierCounterScenario extends IntegrationScenario {
           steps: [
             Given(
               'The GherkinIntegrationTestView is active',
-              (tester, log, box, [example, binding]) async {
+              (tester, log, box, mocks, [example, binding]) async {
                 log.info('Initialising the view..');
                 await tester.pumpWidget(const MyApp());
                 await tester.pumpAndSettle();
@@ -26,7 +26,7 @@ class IncrementValueNotifierCounterScenario extends IntegrationScenario {
             ),
             When(
               'I increment the counter',
-              (tester, log, box, [example, binding]) async {
+              (tester, log, box, mocks, [example, binding]) async {
                 log.info('Setting the counter to 0, finding reset button..');
                 final resetButton = find.byKey(ConstKeys.resetButton);
                 expect(resetButton, findsOneWidget);
@@ -48,7 +48,7 @@ class IncrementValueNotifierCounterScenario extends IntegrationScenario {
             ),
             Then(
               'We expect the ValueNotifier to have the value of the increments',
-              (tester, log, box, [example, binding]) async {
+              (tester, log, box, mocks, [example, binding]) async {
                 log.info('Finding value counter value..');
                 final valueCounterValue = (find
                         .byKey(ConstKeys.valueOfTheValueNotifierCounter)

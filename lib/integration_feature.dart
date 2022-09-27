@@ -46,11 +46,13 @@ class IntegrationFeature {
     IntegrationTestWidgetsFlutterBinding? binding,
     String? testDescription,
     int? nrFeature,
+    IntegrationMocks? mocks,
   }) {
     flutter_test.group(
       _description,
       () {
-        _setUpAndTeardown();
+        final _mocks = mocks ?? IntegrationMocks();
+        _setUpAndTeardown(mocks: _mocks);
         for (int nrScenario = 0; nrScenario < _scenarios.length; nrScenario++) {
           _scenarios[nrScenario].test(
             binding: _binding ?? binding,
@@ -65,10 +67,20 @@ class IntegrationFeature {
   }
 
   /// Runs any provided [_setUpEach], [_setUpOnce], [_tearDownEach] and [_tearDownOnce] methods.
-  void _setUpAndTeardown() {
-    if (_setUpOnce != null) flutter_test.setUpAll(_setUpOnce!);
-    if (_tearDownOnce != null) flutter_test.tearDownAll(_tearDownOnce!);
-    if (_setUpEach != null) flutter_test.setUp(_setUpEach!);
-    if (_tearDownEach != null) flutter_test.tearDown(_tearDownEach!);
+  void _setUpAndTeardown({
+    required IntegrationMocks mocks,
+  }) {
+    if (_setUpOnce != null) {
+      flutter_test.setUpAll(() => _setUpOnce!(mocks));
+    }
+    if (_tearDownOnce != null) {
+      flutter_test.tearDownAll(() => _tearDownOnce!(mocks));
+    }
+    if (_setUpEach != null) {
+      flutter_test.setUp(() => _setUpEach!(mocks));
+    }
+    if (_tearDownEach != null) {
+      flutter_test.tearDown(() => _tearDownEach!(mocks));
+    }
   }
 }
