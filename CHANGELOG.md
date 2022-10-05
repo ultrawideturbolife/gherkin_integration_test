@@ -1,3 +1,7 @@
+## 0.0.4+2
+
+* Improved example toString
+
 ## 0.0.4+1
 
 * Removed unused UnitExample.isLastExample.
