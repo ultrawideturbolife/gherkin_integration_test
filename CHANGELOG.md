@@ -1,3 +1,7 @@
+## 0.0.4+1
+
+* Removed unused UnitExample.isLastExample.
+
 ## 0.0.4
 
 * **⚠️ Breaking:** Added the `IntegrationMocks` object that gets passed around from your setup methods until your last `IntegrationStep` to facilitate better mocks integration.

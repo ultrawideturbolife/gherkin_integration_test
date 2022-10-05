@@ -5,7 +5,6 @@ class IntegrationExample {
   const IntegrationExample({
     List<Object?>? values,
     String? description,
-    this.isLastExample = false,
   })  : _values = values,
         _description = description;
 
@@ -14,9 +13,6 @@ class IntegrationExample {
 
   /// Optional description for improved logging.
   final String? _description;
-
-  /// Indicates whether this is the last example of a scenario.
-  final bool isLastExample;
 
   @override
   String toString() => _description ?? 'IntegrationExample{values: $_values}';
