@@ -1,3 +1,7 @@
+## 0.0.4+3
+
+* Improved example toString again
+
 ## 0.0.4+2
 
 * Improved example toString
