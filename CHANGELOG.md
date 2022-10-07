@@ -1,3 +1,7 @@
+## 0.0.4+4
+
+* Improved example project
+
 ## 0.0.4+3
 
 * Improved example toString again

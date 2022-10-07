@@ -15,8 +15,9 @@ class IntegrationExample {
   final String? _description;
 
   @override
-  String toString() =>
-      _description != null ? '$_description: $_values' : 'IntegrationExample{values: $_values}';
+  String toString() => _description != null
+      ? '$_description: $_values'
+      : 'IntegrationExample{values: $_values}';
 }
 
 extension IntegrationExampleExtension on IntegrationExample? {
