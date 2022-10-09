@@ -9,7 +9,7 @@
 
 This package is based on the `Behaviour Driven Development` (BDD) language called `Gherkin`. This language enables us as developers to design and execute tests in an intuitive and readable way. For people who have a little less experience with development, these tests are also easy to understand because the syntax is very similar to English.
 
-![DALL·E 2022-09-27 21.08.11 - a gherkin monster super hero with wings and a computer flying through space, fantasy style.png](https://codaveto.com/_next/image?url=https%3A%2F%2Fsuper-static-assets.s3.amazonaws.com%2F653aa7f7-32fd-4a5c-b3cf-2044da52b531%2Fimages%2Fefc35787-99e6-4591-8eb5-84787c2880aa.png&w=1920&q=80)
+![DALL·E 2022-09-27 21.08.11 - a gherkin monster super hero with wings and a computer flying through space, fantasy style.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/262db4dd-7e50-4de6-a798-0447ecd3ec92/DALLE_2022-09-27_21.08.11_-_a_gherkin_monster_super_hero_with_wings_and_a_computer_flying_through_space_fantasy_style.png)
 
 Most tests look something like this:
 
@@ -165,7 +165,7 @@ typedef IntegrationStepCallback<Example extends IntegrationExample?> = FutureOr<
       ```
 
 - `IntegrationMocks mocks`
-  - A box that exists and persists throughout your entire `IntegrationTest`, `IntegrationFeature` and/or `IntegrationScenario`. You may have optionally use this box to store mocks that you need so you may later retrieve them to stub methods to your liking.
+  - A box that exists and persists throughout your entire `IntegrationTest`, `IntegrationFeature` and/or `IntegrationScenario`. You may have optionally use this box to store mocks that you need so you may later retrieve them to stub methods to your liking. You may set up your mocks from any method but it’s recommended to use the `setUpMocks` method because that runs before any other method inside any of the test classes and will allow you to keep a good overview.
 - `IntegrationExample? example`
   - Optional ‘Scenario Outline’ examples that may have been specified inside a `IntegrationScenario` like this:
 
@@ -271,12 +271,13 @@ Because not everybody wants to write tests the same way we also created these co
 
 While this may perfectly fit our testing needs there are a couple functionalities at our disposal that give our tests extra power.
 
-### **🏗 setUpOnce, setUpEach, tearDownOnce, tearDownEach**
+### **🏗 setUpMocks, setUpOnce, setUpEach, tearDownOnce, tearDownEach**
 
 ---
 
 Each class has access to these methods and will run them in sort of the same way:
 
+- `setUpMocks` - will run first before any other method inside an `IntegrationTest`, `IntegrationFeature` or `IntegrationScenario`.
 - `setUpEach` - will run at the START of EACH `IntegrationScenario` under the chosen class (may be specified in `IntegrationTest`, `IntegrationFeature` or `IntegrationScenario` itself).
 - `tearDownEach` - will run at the END of EACH `IntegrationScenario` under the chosen class (may be specified in `IntegrationTest`, `IntegrationFeature` or `IntegrationScenario` itself).
 - `setUpOnce` - will run ONCE at the START of chosen class (may be specified in `IntegrationTest`, `IntegrationFeature` or `IntegrationScenario` itself).
@@ -297,9 +298,11 @@ class DummyIntegrationTest extends IntegrationTest {
           features: [
             IntegrationFeature(
               description: 'Saving of dummies',
+              setUpMocks: (mocks) {
+                mocks.write(DummyMock());
+              },
               setUpOnce: (mocks) {
-                final dummyMock = DummyMock();
-                mocks.write(dummyMock);
+                // Do something once
               },
               setUpEach: (mocks) async {
                 AppSetup.reset();

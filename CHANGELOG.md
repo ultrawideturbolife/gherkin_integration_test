@@ -1,3 +1,8 @@
+## 0.0.5
+
+* **✨ New:** Added new `setUpMocks` methods to `IntegrationTest`, `IntegrationFeature`, `IntegrationScenario`.
+* **⚠️ Breaking:** Removed the optional `mocks` parameter from the `IntegrationTest.test` method, because redundant.
+
 ## 0.0.4+4
 
 * Improved example project
@@ -12,7 +17,7 @@
 
 ## 0.0.4+1
 
-* Removed unused UnitExample.isLastExample.
+* Removed unused IntegrationExample.isLastExample.
 
 ## 0.0.4
 

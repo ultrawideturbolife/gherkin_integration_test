@@ -21,6 +21,7 @@ class IntegrationTest {
   IntegrationTest({
     required String description,
     required List<IntegrationFeature> features,
+    void Function(IntegrationMocks mocks)? setUpMocks,
     TestGroupFunction? setUpEach,
     TestGroupFunction? tearDownEach,
     TestGroupFunction? setUpOnce,
@@ -28,6 +29,7 @@ class IntegrationTest {
     IntegrationTestWidgetsFlutterBinding? binding,
   })  : _description = description,
         _features = features,
+        _setUpMocks = setUpMocks,
         _setUpEach = setUpEach,
         _tearDownEach = tearDownEach,
         _setUpOnce = setUpOnce,
@@ -39,6 +41,9 @@ class IntegrationTest {
 
   /// List of all testable features in your app.
   final List<IntegrationFeature> _features;
+
+  /// Callback to set up mocks before any other logic is run.
+  final void Function(IntegrationMocks mocks)? _setUpMocks;
 
   /// Code that will run at the START of each [IntegrationScenario] under this [IntegrationTest]
   /// or at the START of EACH [IntegrationScenario._examples] under this [IntegrationTest].
@@ -58,11 +63,12 @@ class IntegrationTest {
   final IntegrationTestWidgetsFlutterBinding? _binding;
 
   /// Runs all [IntegrationTest._features] test methods.
-  void test({IntegrationMocks? mocks}) {
+  void test() {
     flutter_test.group(
       _description,
       () {
-        final _mocks = mocks ?? IntegrationMocks();
+        final _mocks = IntegrationMocks();
+        _setUpMocks?.call(_mocks);
         _setUpAndTeardown(mocks: _mocks);
         for (int nrFeature = 0; nrFeature < _features.length; nrFeature++) {
           _features[nrFeature].test(

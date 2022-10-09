@@ -5,6 +5,7 @@ class IntegrationFeature {
   const IntegrationFeature({
     required String description,
     required List<IntegrationScenario> scenarios,
+    void Function(IntegrationMocks mocks)? setUpMocks,
     TestGroupFunction? setUpEach,
     TestGroupFunction? tearDownEach,
     TestGroupFunction? setUpOnce,
@@ -12,6 +13,7 @@ class IntegrationFeature {
     IntegrationTestWidgetsFlutterBinding? binding,
   })  : _description = description,
         _scenarios = scenarios,
+        _setUpMocks = setUpMocks,
         _setUpEach = setUpEach,
         _tearDownEach = tearDownEach,
         _setUpOnce = setUpOnce,
@@ -23,6 +25,9 @@ class IntegrationFeature {
 
   /// List that specifies all [IntegrationScenario]s for a given [IntegrationFeature].
   final List<IntegrationScenario> _scenarios;
+
+  /// Callback to set up mocks before any other logic is run.
+  final void Function(IntegrationMocks mocks)? _setUpMocks;
 
   /// Code that will run at the START of each [IntegrationScenario] under this [IntegrationFeature]
   /// or at the START of EACH [IntegrationScenario._examples] under this [IntegrationFeature].
@@ -52,6 +57,7 @@ class IntegrationFeature {
       _description,
       () {
         final _mocks = mocks ?? IntegrationMocks();
+        _setUpMocks?.call(_mocks);
         _setUpAndTeardown(mocks: _mocks);
         for (int nrScenario = 0; nrScenario < _scenarios.length; nrScenario++) {
           _scenarios[nrScenario].test(

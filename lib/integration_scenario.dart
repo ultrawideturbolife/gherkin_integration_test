@@ -5,6 +5,7 @@ class IntegrationScenario<Example extends IntegrationExample?> {
   IntegrationScenario({
     required String description,
     required List<IntegrationStep> steps,
+    void Function(IntegrationMocks mocks)? setUpMocks,
     List<Example> examples = const [],
     IntegrationTestWidgetsFlutterBinding? binding,
     TestGroupFunction? setUpEach,
@@ -13,6 +14,7 @@ class IntegrationScenario<Example extends IntegrationExample?> {
     TestGroupFunction? tearDownOnce,
   })  : _description = description,
         _steps = steps,
+        _setUpMocks = setUpMocks,
         _binding = binding,
         _examples = examples,
         _setUpEach = setUpEach,
@@ -31,6 +33,9 @@ class IntegrationScenario<Example extends IntegrationExample?> {
   /// For more information about how to write a [IntegrationStep] see the [IncrementCounterScenario]
   /// example or check out the [IntegrationStep] documentation.
   final List<IntegrationStep> _steps;
+
+  /// Callback to set up mocks before any other logic is run.
+  final void Function(IntegrationMocks mocks)? _setUpMocks;
 
   /// List of scenario outline examples of type [Example] that extend [IntegrationExample].
   final List<Example> _examples;
@@ -71,6 +76,7 @@ class IntegrationScenario<Example extends IntegrationExample?> {
       _description,
       () {
         final _mocks = mocks ?? IntegrationMocks();
+        _setUpMocks?.call(_mocks);
         _setUpAndTeardown(mocks: _mocks);
         for (int index = 0; index < math.max(1, _examples.length); index++) {
           flutter_test.testWidgets(
